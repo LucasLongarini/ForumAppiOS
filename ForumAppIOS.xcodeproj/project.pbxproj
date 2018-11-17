@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DB032440219F74E100C0359F /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB03243F219F74E100C0359F /* RegisterViewController.swift */; };
 		DB7EBF142198A566006BC03B /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7EBF132198A566006BC03B /* StartViewController.swift */; };
 		DB7EBF172198ACBF006BC03B /* UserHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7EBF162198ACBF006BC03B /* UserHelper.swift */; };
 		DB7EBF1A2198AD2D006BC03B /* LoginCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7EBF192198AD2D006BC03B /* LoginCredentials.swift */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DB03243F219F74E100C0359F /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		DB7EBF132198A566006BC03B /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
 		DB7EBF162198ACBF006BC03B /* UserHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserHelper.swift; sourceTree = "<group>"; };
 		DB7EBF192198AD2D006BC03B /* LoginCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCredentials.swift; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				DB7EBF132198A566006BC03B /* StartViewController.swift */,
+				DB03243F219F74E100C0359F /* RegisterViewController.swift */,
 				DB7EBF2721991C96006BC03B /* MainPageViewController.swift */,
 				DB7EBF33219D4203006BC03B /* ProfileViewController.swift */,
 			);
@@ -217,6 +220,7 @@
 				DB7EBF2621991BF2006BC03B /* User.swift in Sources */,
 				DB7EBF142198A566006BC03B /* StartViewController.swift in Sources */,
 				DB7EBF30219947CE006BC03B /* PostHelper.swift in Sources */,
+				DB032440219F74E100C0359F /* RegisterViewController.swift in Sources */,
 				DB7EBF2A21991CF4006BC03B /* PostCell.swift in Sources */,
 				DB7EBF34219D4203006BC03B /* ProfileViewController.swift in Sources */,
 				DB7EBF1F2198DED8006BC03B /* Extensions.swift in Sources */,
@@ -369,6 +373,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DBAD5FBK5F;
 				INFOPLIST_FILE = ForumAppIOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -387,6 +392,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DBAD5FBK5F;
 				INFOPLIST_FILE = ForumAppIOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

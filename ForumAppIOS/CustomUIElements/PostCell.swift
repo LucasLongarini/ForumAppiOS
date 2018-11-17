@@ -32,7 +32,7 @@ class PostCell: UITableViewCell {
         self.profilePicture.layer.cornerRadius = self.profilePicture.frame.height / 2
         self.profilePicture.clipsToBounds = true
         self.profilePicture.layer.borderWidth = 1.5
-        self.profilePicture.layer.borderColor = UIColor.darkGray.cgColor
+        self.profilePicture.layer.borderColor = UIColor(rgb: 0xD8D8D8).cgColor
         self.backView.addDropShadow()
     }
     
@@ -40,12 +40,16 @@ class PostCell: UITableViewCell {
         switch value {
         case -1:
             voteValue = .down
+            upVoteButton.tintColor = stockButtonColor
             downVoteButton.tintColor = likedButtonColor
         case 0:
             voteValue = .none
+            downVoteButton.tintColor = stockButtonColor
+            upVoteButton.tintColor = stockButtonColor
         case 1:
             voteValue = .up
             upVoteButton.tintColor = likedButtonColor
+            downVoteButton.tintColor = stockButtonColor
         default:
             print("Error in setVoteValue: \(value) is not a valid value. Enter (-1, 0 , 1)")
             return

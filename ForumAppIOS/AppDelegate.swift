@@ -22,6 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.main.bounds)
         var loggedIN: Bool = false
         var jwt: String = ""
+        var userId:Int?
         //check if we have a jwt
         let managedObjectContext:NSManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         let jwtRequest:NSFetchRequest<Token> = Token.fetchRequest()
@@ -46,6 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     if loggedIn{
                         loggedIN = true
                         jwt = results[0].token!
+                        userId = userID
                         group.leave()
                     }
                     else{
@@ -82,10 +84,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if(loggedIN){
             let storyboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let initialViewController = storyboard.instantiateViewController(withIdentifier: "MainPage")
+            let mainPageViewController = (((initialViewController as? UITabBarController)?.viewControllers![0] as? UINavigationController)?.viewControllers[0] as? MainPageViewController)
+            mainPageViewController?.jwt = jwt
+            mainPageViewController?.userId = userId
             self.window?.rootViewController = initialViewController
             self.window?.makeKeyAndVisible()
         }else{
-            print("here")
             let storyboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let initialViewController = storyboard.instantiateViewController(withIdentifier: "LoginPage")
             self.window?.rootViewController = initialViewController

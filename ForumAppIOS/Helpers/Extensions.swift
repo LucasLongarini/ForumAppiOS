@@ -76,6 +76,16 @@ extension UIView{
         clipsToBounds = false;
         
     }
+    
+    func addSoftShadow(){
+        layer.shadowOffset = CGSize(width: 0, height: 1)
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowRadius = 2
+        layer.shadowOpacity = 0.4
+        layer.masksToBounds = false;
+        clipsToBounds = false;
+        
+    }
 
     func shake() {
         let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")

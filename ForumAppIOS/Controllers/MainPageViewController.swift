@@ -15,18 +15,20 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
     @IBOutlet weak var segmentedView: TabbedSegmentedControl!
     @IBOutlet weak var segmentedTopConstraint: NSLayoutConstraint!
     var jwt:String?
+    var userId:Int?
     var posts:[Post] = [Post]()
     @IBOutlet weak var tableView: UITableView!
     var managedObjectContext:NSManagedObjectContext!
     var postHelper:PostHelper!
+    let refreshControl: UIRefreshControl = UIRefreshControl()
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.dataSource = self; tableView.delegate = self
+        setupView()
+        
         managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 30
-        tableView.contentInset = UIEdgeInsets(top: self.segmentedView.frame.height + 2.5, left: 0, bottom: 2.5, right: 0)
+
         if jwt == nil{self.jwt = getjwt()}
         guard let jwt = self.jwt else{return }//maybe display error message and take back to login screen
         postHelper = PostHelper(jwt: jwt)
@@ -34,13 +36,21 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
         postHelper.getRecent(page: 1) { (results) in
             if let posts = results{
                 self.posts.append(contentsOf: posts)
-                print(posts.count)
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
             }
         }
-
+    }
+    
+    func setupView(){
+        tableView.dataSource = self; tableView.delegate = self
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 30
+        tableView.contentInset = UIEdgeInsets(top: self.segmentedView.frame.height + 2.5, left: 0, bottom: 2.5, right: 0)
+        tableView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(refreshPosts(_:)), for: .valueChanged)
+        refreshControl.tintColor = UIColor(rgb: 0xFEFEFE)
     }
     
     func getjwt()->String?{
@@ -64,7 +74,7 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell") as! PostCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell", for: indexPath) as! PostCell
         let post = self.posts[indexPath.row]
         if let pictureUrl = post.user.pictureUrl{
             cell.profilePicture.loadImagesUsingCache(pictureUrl: pictureUrl)
@@ -89,6 +99,19 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
         }
         else{
             segmentedTopConstraint.constant = -5
+        }
+    }
+    
+    @objc private func refreshPosts(_ sender: Any) {
+        postHelper.getRecent(page: 1) { (results) in
+            if let posts = results{
+                self.posts.removeAll()
+                self.posts.append(contentsOf: posts)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    self.refreshControl.endRefreshing()
+                }
+            }
         }
     }
     

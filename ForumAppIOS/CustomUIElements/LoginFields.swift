@@ -40,7 +40,9 @@ class LoginFields: UITextField {
             view.addSubview(imageView)
             leftView = view
         }else{
-            leftViewMode = .never
+            leftViewMode = .always
+            let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: leftPadding, height: self.frame.size.height))
+            self.leftView = paddingView
         }
         
         attributedPlaceholder = NSAttributedString(string: placeholder ?? "", attributes: [NSAttributedString.Key.foregroundColor: tintColor])

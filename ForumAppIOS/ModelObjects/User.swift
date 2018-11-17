@@ -9,7 +9,10 @@
 import Foundation
 
 class User: Decodable {
+    
     var id: Int? 
     var name:String?
     var pictureUrl:String?
+    var totalLikes:Int?
+    var totalPosts:Int?
 }

@@ -26,6 +26,7 @@ class StartViewController: UIViewController, UITextFieldDelegate {
     var userHelper = UserHelper()
     var managedObjectContext:NSManagedObjectContext!
     var token:String?
+    var userId:Int?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -126,6 +127,7 @@ class StartViewController: UIViewController, UITextFieldDelegate {
                     self.performSegue(withIdentifier: "LoginToMain", sender: self)
                 }
                 self.token = token
+                self.userId = user_id
             }
         }
     }
@@ -133,8 +135,11 @@ class StartViewController: UIViewController, UITextFieldDelegate {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "LoginToMain"{
-            if let dest = segue.destination as? MainPageViewController{
-                dest.jwt = self.token
+            if let dest = segue.destination as? UITabBarController{
+                if let main = (dest.viewControllers![0] as? UINavigationController)?.viewControllers[0] as? MainPageViewController{
+                    main.jwt = self.token
+                    main.userId = self.userId
+                }
             }
         }
     }

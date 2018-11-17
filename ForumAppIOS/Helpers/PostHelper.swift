@@ -10,7 +10,7 @@ import Foundation
 
 class PostHelper{
     private let host:String = "https://enigmatic-taiga-14768.herokuapp.com"
-    private var jwt:String
+    var jwt:String
     init(jwt:String) {
         self.jwt = jwt
     }
@@ -37,6 +37,31 @@ class PostHelper{
                 print("Failed to decode: \(jsonErr)")
             }
             
+        }.resume()
+
+    }
+    
+    func getUserPosts(page:Int,userId:Int, completion: @escaping ([Post]?)->()){
+        if page < 1{return}
+        let url = URL(string: "\(host)/posts/\(userId)/posts?page=\(page)")!
+        let session = URLSession.shared
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue(self.jwt, forHTTPHeaderField: "token")
+        request.addValue("no-cache", forHTTPHeaderField: "cache-control")
+        session.dataTask(with: request) { (data, response, error) in
+            guard error == nil else{return}
+            guard let data = data else{return}
+            guard let httpResponse = response as? HTTPURLResponse else{return}
+            if(httpResponse.statusCode != 200) {completion(nil);return}
+            do{
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let jsonData = try decoder.decode([Post].self, from: data)
+                completion(jsonData)
+            }catch let jsonErr{
+                print("Failed to decode: \(jsonErr)")
+            }
         }.resume()
 
     }
@@ -74,6 +99,7 @@ class PostHelper{
         }.resume()
 
     }
+    
 }
 
 enum VoteValue {
