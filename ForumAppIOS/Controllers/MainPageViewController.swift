@@ -9,14 +9,14 @@
 import UIKit
 import CoreData
 
-class MainPageViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
+class MainPageViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,PostCellDelegate, PostCreatedDelegate {
     
     @IBOutlet weak var segmentedView: TabbedSegmentedControl!
     @IBOutlet weak var segmentedTopConstraint: NSLayoutConstraint!
     var jwt:String?
     var userId:Int?
-    var posts:[Post] = [Post]()
+    var recentPosts:[Post] = [Post]()
+    var trendingPosts:[Post] = [Post]()
     @IBOutlet weak var tableView: UITableView!
     var managedObjectContext:NSManagedObjectContext!
     var postHelper:PostHelper!
@@ -35,7 +35,7 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
 
         postHelper.getRecent(page: 1) { (results) in
             if let posts = results{
-                self.posts.append(contentsOf: posts)
+                self.recentPosts.append(contentsOf: posts)
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
@@ -43,7 +43,13 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        UIApplication.shared.statusBarStyle = .lightContent
+    }
+    
     func setupView(){
+        self.tabBarController?.delegate = UIApplication.shared.delegate as? UITabBarControllerDelegate
         tableView.dataSource = self; tableView.delegate = self
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 30
@@ -69,22 +75,49 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
         return nil
     }
     
+    var recentPage:Int = 1
+    func getRecentPosts(){
+        postHelper.getRecent(page: recentPage) { (results) in
+            if let posts = results{
+                self.recentPosts.append(contentsOf: posts)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }
+    }
+    
+    var trendingPage:Int = 1
+    func getTrendingPosts(){
+        postHelper.getTrending(page: trendingPage) { (results) in
+            if let posts = results{
+                self.trendingPosts.append(contentsOf: posts)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.posts.count
+        return self.recentPosts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell", for: indexPath) as! PostCell
-        let post = self.posts[indexPath.row]
-        if let pictureUrl = post.user.pictureUrl{
-            cell.profilePicture.loadImagesUsingCache(pictureUrl: pictureUrl)
-        }else{
-            cell.profilePicture.image = UIImage(named: "StockProfilePic")!
-        }
+        let post = self.recentPosts[indexPath.row]
+        
+        if post.user.userId == userId{cell.profilePicture.image = PersonalUserSingleton.shared.image}
+        else if let pictureUrl = post.user.pictureUrl{cell.profilePicture.loadImagesUsingCache(pictureUrl: pictureUrl)}
+        else{cell.profilePicture.image = UIImage(named: "StockProfilePic")!}
+        
+        cell.delegate = self
+        cell.postIndex = indexPath.row
         cell.name.text = post.user.name?.capitalized ?? "Deleted User"
         cell.content.text = post.content
         cell.setTimestamp(seconds: post.timeElapsed)
-        cell.commentsButton.setTitle((post.comments<1 ? "no " : "\(post.comments) ")+((post.comments==1) ? "comment":"comments"), for: .normal)
+        if post.comments == 0{cell.commentsButton.setTitle("Write a comment", for: .normal)}
+        else{cell.commentsButton.setTitle("\(post.comments) "+((post.comments==1) ? "Comment":"Comments"), for: .normal)}
         cell.postId = post.id
         cell.voteLabel.text = "\(post.votes)"
         cell.postHelper = self.postHelper
@@ -105,14 +138,39 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
     @objc private func refreshPosts(_ sender: Any) {
         postHelper.getRecent(page: 1) { (results) in
             if let posts = results{
-                self.posts.removeAll()
-                self.posts.append(contentsOf: posts)
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                    self.refreshControl.endRefreshing()
-                }
+                self.recentPosts.removeAll()
+                self.recentPosts.append(contentsOf: posts)
+            }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                self.refreshControl.endRefreshing()
             }
         }
     }
     
+    @IBAction func segmentedViewChanged(_ sender: Any) {
+        self.tableView.reloadData()
+    }
+    
+    var postToSend:Post!
+    func commentsPressed(postIndex: Int) {
+        postToSend = self.recentPosts[postIndex]
+        performSegue(withIdentifier: "MainToComments", sender: self)
+    }
+    
+    func postCreated(post: Post) {
+        recentPosts.insert(post, at: 0)
+        tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .top)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("YUH")
+        if segue.identifier == "MainToComments"{
+            if let dest = segue.destination as? CommentsViewController{
+                dest.post = self.postToSend
+                dest.jwt = self.jwt!
+                dest.postHelper = self.postHelper
+            }
+        }
+    }
 }

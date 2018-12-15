@@ -8,13 +8,23 @@
 
 import UIKit
 
-let ImageCache = NSCache<AnyObject, AnyObject>()
+class UIImageCache{
+    
+    static let shared = UIImageCache()
+    
+    init(){
+        imageCache = NSCache<AnyObject, AnyObject>()
+        imageCache.countLimit = 100
+    }
+    
+    let imageCache:NSCache<AnyObject, AnyObject>
+}
+
 extension UIImageView{
     func loadImagesUsingCache(pictureUrl:String){
-        ImageCache.countLimit = 100
         
         //check cache for image first
-        if let cachedImage = ImageCache.object(forKey: pictureUrl as AnyObject) as? UIImage{
+        if let cachedImage = UIImageCache.shared.imageCache.object(forKey: pictureUrl as AnyObject) as? UIImage{
             DispatchQueue.main.async {
                 self.image = cachedImage
             }
@@ -29,7 +39,7 @@ extension UIImageView{
             }
             DispatchQueue.main.async {
                 if let downloadedImage = UIImage(data: data!){
-                    ImageCache.setObject(downloadedImage, forKey: pictureUrl as AnyObject)
+                    UIImageCache.shared.imageCache.setObject(downloadedImage, forKey: pictureUrl as AnyObject)
                     self.image = downloadedImage
                 }
             }

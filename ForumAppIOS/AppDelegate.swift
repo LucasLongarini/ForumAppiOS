@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UITabBarControllerDelegate {
 
     var window: UIWindow?
 
@@ -82,6 +82,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         group.wait()
         if(loggedIN){
+            //get personal user data
+            userHelper.getUser(jwt: jwt, userId: userId!) { (result) in
+                if let user = result{
+                    PersonalUserSingleton.shared.updateUser(user: user)
+                    PersonalUserSingleton.shared.jwt = jwt
+                    if let url = user.pictureUrl{
+                        PersonalUserSingleton.shared.updateImage(imageURL: url)
+                    }
+                }
+            }
             let storyboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let initialViewController = storyboard.instantiateViewController(withIdentifier: "MainPage")
             let mainPageViewController = (((initialViewController as? UITabBarController)?.viewControllers![0] as? UINavigationController)?.viewControllers[0] as? MainPageViewController)
@@ -89,7 +99,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             mainPageViewController?.userId = userId
             self.window?.rootViewController = initialViewController
             self.window?.makeKeyAndVisible()
-        }else{
+        }
+        else{
             let storyboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let initialViewController = storyboard.instantiateViewController(withIdentifier: "LoginPage")
             self.window?.rootViewController = initialViewController
@@ -166,6 +177,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        if viewController.isEqual(tabBarController.viewControllers?[1]){
+            if let newVC = tabBarController.storyboard?.instantiateViewController(withIdentifier: "CreatePostNav") as? UINavigationController {
+                (newVC.viewControllers[0] as! CreatePostViewController).delegate = (tabBarController.viewControllers![0] as! UINavigationController).viewControllers[0] as! MainPageViewController
+                tabBarController.present(newVC, animated: true)
+                return false
+            }
+        }
+        return true
     }
 
 }

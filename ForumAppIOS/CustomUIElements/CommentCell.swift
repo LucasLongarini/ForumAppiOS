@@ -1,50 +1,76 @@
 //
-//  PostCell.swift
+//  CommentCell.swift
 //  ForumAppIOS
 //
-//  Created by Lucas Longarini on 2018-11-11.
+//  Created by Lucas Longarini on 2018-11-17.
 //  Copyright © 2018 Lucas Longarini. All rights reserved.
 //
 
 import UIKit
 
-protocol PostCellDelegate {
-    func commentsPressed(postIndex:Int)
+enum CommentCellBound {
+    case top
+    case middle
+    case bottom
+    case none
 }
 
-class PostCell: UITableViewCell {
 
-    @IBOutlet weak var upVoteButton: UIButton!
+class CommentCell: UITableViewCell {
+
+    @IBOutlet weak var sideViewTopContraint: NSLayoutConstraint!
+    @IBOutlet weak var sideViewBottomContraint: NSLayoutConstraint!
+    @IBOutlet weak var sideView: UIView!
     @IBOutlet weak var downVoteButton: UIButton!
-    @IBOutlet weak var voteLabel: UILabel!
+    @IBOutlet weak var upVoteButton: UIButton!
+    @IBOutlet weak var timestampLabel: UILabel!
     @IBOutlet weak var backView: UIView!
     @IBOutlet weak var profilePicture: UIImageView!
-    @IBOutlet weak var name: UILabel!
-    @IBOutlet weak var content: UILabel!
-    @IBOutlet weak var commentsButton: UIButton!
-    @IBOutlet weak var timestampLabel: UILabel!
-    var postIndex:Int!
-    var postId: Int = 0
-    var postHelper:PostHelper?
-    var voteValue: VoteValue = .none
-    var stockButtonColor: UIColor!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var contentLabel: UILabel!
+    @IBOutlet weak var voteLabel: UILabel!
+    var postId:Int!
+    var id:Int!
+    var commentHelper:CommentHelper?
+    var voteValue:VoteValue = .none
+    var stockButtonColor:UIColor!
     var likedButtonColor:UIColor = UIColor(rgb: 0x615F71)
+    var bound:CommentCellBound = .none{
+        didSet{
+            changeSideView()
+        }
+    }
     
-    var delegate:PostCellDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         stockButtonColor = upVoteButton.tintColor
         backView.layer.cornerRadius = 5
-        self.profilePicture.layer.cornerRadius = self.profilePicture.frame.height / 2
-        self.profilePicture.clipsToBounds = true
-        self.profilePicture.layer.borderWidth = 1.5
-        self.profilePicture.layer.borderColor = UIColor(rgb: 0xD8D8D8).cgColor
-        self.backView.addDropShadow()
+        profilePicture.layer.cornerRadius = profilePicture.frame.height / 2
+        profilePicture.clipsToBounds = true
+        profilePicture.layer.borderWidth = 1.5
+        profilePicture.layer.borderColor = UIColor(rgb: 0xD8D8D8).cgColor
+        sideView.layer.cornerRadius = sideView.frame.width / 2
+        
+        backView.addDropShadow()
+    }
+    
+    func changeSideView(){
+        switch bound {
+        case .top:
+            sideViewBottomContraint.constant = 30
+        case .middle:
+            sideViewBottomContraint.constant = 30
+            sideViewTopContraint.constant = -30
+        case .bottom:
+            sideViewTopContraint.constant = -30
+        case .none:
+            break;
+        }
     }
     
     func setVoteValue(value:Int){
-        switch value {
+        switch value{
         case -1:
             voteValue = .down
             upVoteButton.tintColor = stockButtonColor
@@ -63,60 +89,61 @@ class PostCell: UITableViewCell {
         }
     }
     
-    @IBAction func upVotePressed(_ sender: UIButton) {
-        guard let postHelper = self.postHelper else{return}
+    
+    @IBAction func upVoteButtonPressed(_ sender: Any) {
+        guard let commentHelper = self.commentHelper else{return}
         let originalLikeValue:Int = Int(self.voteLabel.text!)!
-        //already pressed (unlike)
-        if self.voteValue == .up {
+        //already pressed(unlike)
+        if self.voteValue == .up{
             //change instantly
             self.voteLabel.text = "\(originalLikeValue - 1)"
-            sender.tintColor = stockButtonColor
-             self.voteValue = .none
+            (sender as! UIButton).tintColor = stockButtonColor
+            self.voteValue = .none
             
-            postHelper.vote(value: .down, postId: self.postId) { (successful) in
+            commentHelper.vote(value: .down, commentId: self.id) { (success) in
                 //revert changes
-                if !successful {
+                if !success{
                     self.voteValue = .up
                     DispatchQueue.main.async {
                         self.voteLabel.text = "\(originalLikeValue + 1)"
-                        sender.tintColor = self.likedButtonColor
+                        (sender as! UIButton).tintColor = self.likedButtonColor
                     }
                 }
             }
         }
-        //not pressed (like)
+        //not pressed(like)
         else if self.voteValue == .none{
             //change instantly
             self.voteLabel.text = "\(originalLikeValue + 1)"
-            sender.tintColor = likedButtonColor
+            (sender as! UIButton).tintColor = likedButtonColor
             self.voteValue = .up
-
-            postHelper.vote(value: .up, postId: self.postId) { (successful) in
+            
+            commentHelper.vote(value: .up, commentId: id) { (success) in
                 //revert changes
-                if !successful{
+                if !success{
                     self.voteValue = .none
                     DispatchQueue.main.async{
                         self.voteLabel.text = "\(originalLikeValue - 1)"
-                        sender.tintColor = self.stockButtonColor
+                        (sender as! UIButton).tintColor = self.stockButtonColor
                     }
                 }
             }
         }
-        //disliked (like)
+        //disliked(like)
         else if self.voteValue == .down{
             //change instantly
             self.voteLabel.text = "\(originalLikeValue + 2)"
-            sender.tintColor = likedButtonColor
+            (sender as! UIButton).tintColor = likedButtonColor
             self.downVoteButton.tintColor = stockButtonColor
             self.voteValue = .up
             
-            postHelper.vote(value: .doubleUp, postId: self.postId) { (successful) in
+            commentHelper.vote(value: .doubleUp, commentId: id) { (success) in
                 //revert changes
-                if !successful{
+                if !success{
                     self.voteValue = .down
                     DispatchQueue.main.async{
                         self.voteLabel.text = "\(originalLikeValue - 2)"
-                        sender.tintColor = self.stockButtonColor
+                        (sender as! UIButton).tintColor = self.stockButtonColor
                         self.downVoteButton.tintColor = self.likedButtonColor
                     }
                 }
@@ -124,23 +151,23 @@ class PostCell: UITableViewCell {
         }
     }
     
-    @IBAction func downVotePressed(_ sender: UIButton) {
-        guard let postHelper = self.postHelper else{return}
+    @IBAction func downVoteButtonPressed(_ sender: Any) {
+        guard let commentHelper = self.commentHelper else{return}
         let originalLikeValue:Int = Int(self.voteLabel.text!)!
         //already pressed (un dislike)
         if self.voteValue == .down {
             //change instantly
             self.voteLabel.text = "\(originalLikeValue + 1)"
-            sender.tintColor = stockButtonColor
+            (sender as! UIButton).tintColor = stockButtonColor
             self.voteValue = .none
             
-            postHelper.vote(value: .up, postId: self.postId) { (successful) in
+            commentHelper.vote(value: .up, commentId: id) { (successful) in
                 //revert changes
                 if !successful {
                     self.voteValue = .down
                     DispatchQueue.main.async {
                         self.voteLabel.text = "\(originalLikeValue - 1)"
-                        sender.tintColor = self.likedButtonColor
+                        (sender as! UIButton).tintColor = self.likedButtonColor
                     }
                 }
             }
@@ -149,16 +176,16 @@ class PostCell: UITableViewCell {
         else if self.voteValue == .none{
             //change instantly
             self.voteLabel.text = "\(originalLikeValue - 1)"
-            sender.tintColor = likedButtonColor
+            (sender as! UIButton).tintColor = likedButtonColor
             self.voteValue = .down
             
-            postHelper.vote(value: .down, postId: self.postId) { (successful) in
+            commentHelper.vote(value: .down, commentId: id) { (successful) in
                 //revert changes
                 if !successful{
                     self.voteValue = .none
                     DispatchQueue.main.async{
                         self.voteLabel.text = "\(originalLikeValue + 1)"
-                        sender.tintColor = self.stockButtonColor
+                        (sender as! UIButton).tintColor = self.stockButtonColor
                     }
                 }
             }
@@ -167,27 +194,22 @@ class PostCell: UITableViewCell {
         else if self.voteValue == .up{
             //change instantly
             self.voteLabel.text = "\(originalLikeValue - 2)"
-            sender.tintColor = likedButtonColor
+            (sender as! UIButton).tintColor = likedButtonColor
             self.upVoteButton.tintColor = stockButtonColor
             self.voteValue = .down
             
-            postHelper.vote(value: .doubleDown, postId: self.postId) { (successful) in
+            commentHelper.vote(value: .doubleDown, commentId: id) { (successful) in
                 //revert changes
                 if !successful{
                     self.voteValue = .up
                     DispatchQueue.main.async{
                         self.voteLabel.text = "\(originalLikeValue + 2)"
-                        sender.tintColor = self.stockButtonColor
+                        (sender as! UIButton).tintColor = self.stockButtonColor
                         self.upVoteButton.tintColor = self.likedButtonColor
                     }
                 }
             }
         }
-    }
-
-    @IBAction func commentsButtonPressed(_ sender: Any) {
-        guard let del = self.delegate else{return}
-        del.commentsPressed(postIndex: self.postIndex)
     }
     
     func setTimestamp(seconds:Int){
@@ -198,36 +220,36 @@ class PostCell: UITableViewCell {
         else if seconds < 60{
             timestampLabel.text = "\(seconds) "+(seconds==1 ? "second" : "seconds")+" ago"
         }
-        //minutes
+            //minutes
         else if seconds < 3600{
             let minutes:Int = seconds/60
             timestampLabel.text = "\(minutes) "+(minutes==1 ? "minute" : "minutes")+" ago"
         }
-        //hours
+            //hours
         else if seconds < 86400{
             let hours:Int = seconds/3600
             timestampLabel.text = "\(hours) "+(hours==1 ? "hour" : "hours")+" ago"
         }
-        //days
+            //days
         else if seconds < 604800{
             let days:Int = seconds/86400
             timestampLabel.text = "\(days) "+(days==1 ? "day" : "days")+" ago"
         }
-        //weeks
+            //weeks
         else if seconds < 2628000{
             let weeks:Int = seconds/604800
             timestampLabel.text = "\(weeks) "+(weeks==1 ? "week" : "weeks")+" ago"
         }
-        //months
+            //months
         else if seconds < 31540000{
             let months:Int = seconds/2628000
             timestampLabel.text = "\(months) "+(months==1 ? "month" : "months")+" ago"
         }
-        //years
+            //years
         else{
             let years:Int = seconds/31540000
             timestampLabel.text = "\(years) "+(years==1 ? "year" : "years")+" ago"
         }
     }
+    
 }
-

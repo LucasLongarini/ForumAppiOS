@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DB032440219F74E100C0359F /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB03243F219F74E100C0359F /* RegisterViewController.swift */; };
+		DB1604FA21A29F6900B7AF2E /* PersonalUserSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1604F921A29F6900B7AF2E /* PersonalUserSingleton.swift */; };
 		DB7EBF142198A566006BC03B /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7EBF132198A566006BC03B /* StartViewController.swift */; };
 		DB7EBF172198ACBF006BC03B /* UserHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7EBF162198ACBF006BC03B /* UserHelper.swift */; };
 		DB7EBF1A2198AD2D006BC03B /* LoginCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7EBF192198AD2D006BC03B /* LoginCredentials.swift */; };
@@ -21,6 +22,11 @@
 		DB7EBF30219947CE006BC03B /* PostHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7EBF2F219947CE006BC03B /* PostHelper.swift */; };
 		DB7EBF32219D2A7C006BC03B /* LoadingIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7EBF31219D2A7C006BC03B /* LoadingIcon.swift */; };
 		DB7EBF34219D4203006BC03B /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7EBF33219D4203006BC03B /* ProfileViewController.swift */; };
+		DB831EB221A00802002B6660 /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB831EB121A00802002B6660 /* CommentsViewController.swift */; };
+		DB831EB421A0C07B002B6660 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB831EB321A0C07B002B6660 /* Comment.swift */; };
+		DB831EB621A0C344002B6660 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB831EB521A0C344002B6660 /* CommentCell.swift */; };
+		DB831EB821A0C68B002B6660 /* CommentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB831EB721A0C68B002B6660 /* CommentHelper.swift */; };
+		DB831EBA21A16334002B6660 /* CreatePostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB831EB921A16334002B6660 /* CreatePostViewController.swift */; };
 		DBAB144F2197B3FB00357682 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBAB144E2197B3FB00357682 /* AppDelegate.swift */; };
 		DBAB14542197B3FB00357682 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBAB14522197B3FB00357682 /* Main.storyboard */; };
 		DBAB14572197B3FB00357682 /* ForumAppIOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DBAB14552197B3FB00357682 /* ForumAppIOS.xcdatamodeld */; };
@@ -30,6 +36,7 @@
 
 /* Begin PBXFileReference section */
 		DB03243F219F74E100C0359F /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		DB1604F921A29F6900B7AF2E /* PersonalUserSingleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalUserSingleton.swift; sourceTree = "<group>"; };
 		DB7EBF132198A566006BC03B /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
 		DB7EBF162198ACBF006BC03B /* UserHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserHelper.swift; sourceTree = "<group>"; };
 		DB7EBF192198AD2D006BC03B /* LoginCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCredentials.swift; sourceTree = "<group>"; };
@@ -43,6 +50,11 @@
 		DB7EBF2F219947CE006BC03B /* PostHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostHelper.swift; sourceTree = "<group>"; };
 		DB7EBF31219D2A7C006BC03B /* LoadingIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIcon.swift; sourceTree = "<group>"; };
 		DB7EBF33219D4203006BC03B /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		DB831EB121A00802002B6660 /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
+		DB831EB321A0C07B002B6660 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		DB831EB521A0C344002B6660 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
+		DB831EB721A0C68B002B6660 /* CommentHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentHelper.swift; sourceTree = "<group>"; };
+		DB831EB921A16334002B6660 /* CreatePostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostViewController.swift; sourceTree = "<group>"; };
 		DBAB144B2197B3FB00357682 /* ForumAppIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ForumAppIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBAB144E2197B3FB00357682 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DBAB14532197B3FB00357682 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -67,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				DB7EBF2F219947CE006BC03B /* PostHelper.swift */,
+				DB831EB721A0C68B002B6660 /* CommentHelper.swift */,
 				DB7EBF162198ACBF006BC03B /* UserHelper.swift */,
 				DB7EBF1E2198DED8006BC03B /* Extensions.swift */,
 			);
@@ -79,6 +92,8 @@
 				DB7EBF192198AD2D006BC03B /* LoginCredentials.swift */,
 				DB7EBF2321991B66006BC03B /* Post.swift */,
 				DB7EBF2521991BF2006BC03B /* User.swift */,
+				DB831EB321A0C07B002B6660 /* Comment.swift */,
+				DB1604F921A29F6900B7AF2E /* PersonalUserSingleton.swift */,
 			);
 			path = ModelObjects;
 			sourceTree = "<group>";
@@ -90,6 +105,8 @@
 				DB03243F219F74E100C0359F /* RegisterViewController.swift */,
 				DB7EBF2721991C96006BC03B /* MainPageViewController.swift */,
 				DB7EBF33219D4203006BC03B /* ProfileViewController.swift */,
+				DB831EB121A00802002B6660 /* CommentsViewController.swift */,
+				DB831EB921A16334002B6660 /* CreatePostViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -98,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				DB7EBF2921991CF4006BC03B /* PostCell.swift */,
+				DB831EB521A0C344002B6660 /* CommentCell.swift */,
 				DB7EBF212198E875006BC03B /* LoginFields.swift */,
 				DB7EBF2D21994060006BC03B /* TabbedSegmentControll.swift */,
 				DB7EBF31219D2A7C006BC03B /* LoadingIcon.swift */,
@@ -209,21 +227,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB831EB621A0C344002B6660 /* CommentCell.swift in Sources */,
+				DB831EBA21A16334002B6660 /* CreatePostViewController.swift in Sources */,
 				DB7EBF2E21994060006BC03B /* TabbedSegmentControll.swift in Sources */,
 				DB7EBF32219D2A7C006BC03B /* LoadingIcon.swift in Sources */,
 				DB7EBF2821991C96006BC03B /* MainPageViewController.swift in Sources */,
+				DB831EB221A00802002B6660 /* CommentsViewController.swift in Sources */,
 				DBAB144F2197B3FB00357682 /* AppDelegate.swift in Sources */,
 				DB7EBF1A2198AD2D006BC03B /* LoginCredentials.swift in Sources */,
 				DBAB14572197B3FB00357682 /* ForumAppIOS.xcdatamodeld in Sources */,
+				DB831EB421A0C07B002B6660 /* Comment.swift in Sources */,
 				DB7EBF222198E875006BC03B /* LoginFields.swift in Sources */,
 				DB7EBF172198ACBF006BC03B /* UserHelper.swift in Sources */,
 				DB7EBF2621991BF2006BC03B /* User.swift in Sources */,
 				DB7EBF142198A566006BC03B /* StartViewController.swift in Sources */,
+				DB831EB821A0C68B002B6660 /* CommentHelper.swift in Sources */,
 				DB7EBF30219947CE006BC03B /* PostHelper.swift in Sources */,
 				DB032440219F74E100C0359F /* RegisterViewController.swift in Sources */,
 				DB7EBF2A21991CF4006BC03B /* PostCell.swift in Sources */,
 				DB7EBF34219D4203006BC03B /* ProfileViewController.swift in Sources */,
 				DB7EBF1F2198DED8006BC03B /* Extensions.swift in Sources */,
+				DB1604FA21A29F6900B7AF2E /* PersonalUserSingleton.swift in Sources */,
 				DB7EBF2421991B66006BC03B /* Post.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

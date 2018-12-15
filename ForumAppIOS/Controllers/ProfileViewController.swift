@@ -47,7 +47,17 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
         setUpView()
         getPosts()
-        getUser()
+        self.profilePicture.image = PersonalUserSingleton.shared.image
+        if let user = PersonalUserSingleton.shared.user{
+            self.nameLabel.text = user.name?.capitalized ?? ""
+            self.totalLikesLabel.text = "\(user.totalLikes ?? 0)"
+            self.totalPostsLabel.text = "\(user.totalPosts ?? 0)"
+        } else{getUser()}
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        UIApplication.shared.statusBarStyle = .lightContent
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -55,6 +65,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.nameLabel.alpha = 1
         self.totalPostsLabel.alpha = 1
         self.totalLikesLabel.alpha = 1
+        
     }
     
     func setUpView(){
@@ -165,7 +176,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
 
             else if self.posts != nil{self.posts!.removeAll()}
-            
+            self.fetchingMore = true;
             DispatchQueue.main.async {
                 self.tableView.reloadData()
                 self.refreshControl.endRefreshing()
@@ -173,5 +184,35 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
     
+    var fetchingMore = false
+    var pagesFetched = 1
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if(scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)){
+            if !fetchingMore /*&& self.posts != nil*/{getMorePosts()}
+        }
+    }
+    
+    func getMorePosts(){
+        fetchingMore = true
+        pagesFetched += 1
+        
+        //start animation
+        print("going true should be scrolled to bottom")
+        postHelper.getUserPosts(page: pagesFetched, userId: self.userId!) { (results) in
+            if let posts = results{
+                self.posts!.append(contentsOf: posts)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    print("setting to false shouldnt go true again until scrolled to bottom")
+                    self.fetchingMore = false
+                    //stop animation
+                }
+            }
+            else{
+                //no results
+            }
 
+        }
+    }
 }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class RegisterViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
@@ -26,8 +27,12 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UIImagePick
     var jwt:String?
     var userId:Int?
     
+    //CoreData
+    var managedObjectContext:NSManagedObjectContext!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         self.view.addGradient(color1: UIColor(rgb: 0x808095), color2: UIColor(rgb: 0x313140))
         setupView()
         firstnameTextField.delegate = self
@@ -87,28 +92,37 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UIImagePick
             }
             
             //need to save the jwt to CoreData
+            let jwt = Token(context: self.managedObjectContext)
+            jwt.token = token!
+            do{try self.managedObjectContext.save()}
+            catch{print("Could not save jwt \(error.localizedDescription)")}
+            
             self.jwt = token
             self.userId = userID
             
             if let image = self.pictureToUpload{
                 self.userHelper.uploadImage(jwt: token!, image: image)
-                //upload image && add it to the cache
+                //save image to cache
+                UIImageCache.shared.imageCache.setObject(image, forKey: "user-\(userID!)" as AnyObject)
             }
-            self.performSegue(withIdentifier: "RegisterToMain", sender: self)
-            print("success jwt is\(token!) id is\(userID!)")
+            
             //segue to main page and pass jwt and userID
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "RegisterToMain", sender: self)
+            }
         }
         
     }
     
     @IBAction func profilePictureTapped(_ sender: Any) {
-        let alert = UIAlertController(title: nil, message: "Type of upload", preferredStyle: .alert)
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Take a Picture", style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: "Camera Roll", style: .default, handler: { (action) in
             let imageController = UIImagePickerController()
             imageController.delegate = self
             self.present(imageController, animated: true)
         }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .destructive, handler: nil))
         self.present(alert, animated: true)
     }
     

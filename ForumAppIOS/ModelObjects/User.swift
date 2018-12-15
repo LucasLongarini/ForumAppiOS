@@ -10,9 +10,22 @@ import Foundation
 
 class User: Decodable {
     
-    var id: Int? 
+    var userId: Int?
     var name:String?
     var pictureUrl:String?
     var totalLikes:Int?
     var totalPosts:Int?
+    
+    init(id:Int, name:String,pictureUrl:String?, totalLikes:Int, totalPosts:Int){
+        self.userId = id
+        self.name = name
+        self.pictureUrl = pictureUrl
+        self.totalLikes = totalLikes
+        self.totalPosts = totalPosts
+    }
+    
+    init(){
+        
+    }
+    
 }
